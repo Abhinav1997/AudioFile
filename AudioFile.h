@@ -444,7 +444,7 @@ bool AudioFile<T>::decodeWaveFile (std::vector<uint8_t>& fileData)
     int16_t audioFormat = twoBytesToInt (fileData, f + 8);
     int16_t numChannels = twoBytesToInt (fileData, f + 10);
     sampleRate = (uint32_t) fourBytesToInt (fileData, f + 12);
-    int32_t numBytesPerSecond = fourBytesToInt (fileData, f + 16);
+    uint32_t numBytesPerSecond = fourBytesToInt (fileData, f + 16);
     int16_t numBytesPerBlock = twoBytesToInt (fileData, f + 20);
     bitDepth = (int) twoBytesToInt (fileData, f + 22);
     
@@ -596,7 +596,7 @@ bool AudioFile<T>::decodeAiffFile (std::vector<uint8_t>& fileData)
     int samplesStartIndex = s + 16 + (int)offset;
         
     // sanity check the data
-    if ((soundDataChunkSize - 8) != totalNumAudioSampleBytes || totalNumAudioSampleBytes > (fileData.size() - samplesStartIndex))
+    if ((soundDataChunkSize - 8) != totalNumAudioSampleBytes || totalNumAudioSampleBytes > static_cast<long>(fileData.size() - samplesStartIndex))
     {
         std::cout << "ERROR: the metadatafor this file doesn't seem right" << std::endl;
         return false;
@@ -947,7 +947,7 @@ void AudioFile<T>::addInt16ToFileData (std::vector<uint8_t>& fileData, int16_t i
 template <class T>
 void AudioFile<T>::clearAudioBuffer()
 {
-    for (int i = 0; i < samples.size();i++)
+    for (size_t i = 0; i < samples.size();i++)
     {
         samples[i].clear();
     }
@@ -1004,7 +1004,7 @@ int AudioFile<T>::getIndexOfString (std::vector<uint8_t>& source, std::string st
     int index = -1;
     int stringLength = (int)stringToSearchFor.length();
     
-    for (int i = 0; i < source.size() - stringLength;i++)
+    for (size_t i = 0; i < source.size() - stringLength;i++)
     {
         std::string section (source.begin() + i, source.begin() + i + stringLength);
         
